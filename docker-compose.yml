@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  # Сервіс бази даних PostgreSQL
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: database
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin1234
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # FastAPI сервіс
+  fastapi:
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: "postgresql://postgres:admin1234@postgres/database"
+      SECRET_KEY: "your_secret_key"
+      CLOUDINARY_API_KEY: "your_cloudinary_api_key"
+      CLOUDINARY_API_SECRET: "your_cloudinary_api_secret"
+      CLOUDINARY_CLOUD_NAME: "your_cloudinary_cloud_name"
+
+volumes:
+  postgres_data:
